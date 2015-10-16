@@ -6,8 +6,12 @@ html,body {
 
 .popup-adoptado .leaflet-popup-content-wrapper,
 .popup-adoptado .leaflet-popup-tip{
-	background-color: #fc0;
+	background-color: #ff0;
 }
 .popup-adoptado a.leaflet-popup-close-button {
-	color: #fff;
+	color: #000;
+}
+
+.adopta-coords {
+	font: bold 20px/20px sans-serif;
 }

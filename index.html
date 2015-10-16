@@ -58,8 +58,6 @@ var styleAdoptado = {
 }
 
 // DATA: geoJSON layers
-//var dataESistema;
-//var dataBDPrevias;
 function addDataToMap(data,markerStyle) {
 	var dataLayer = L.geoJson(data, {
 		pointToLayer: function (feature, latlng) {
@@ -74,7 +72,7 @@ function addDataToMap(data,markerStyle) {
 
 			}
 			if ( feature.properties.nombre_promocional ) {
-				var popupContent = "<header><h3>" + feature.properties.nombre_promocional + "</h3></header>"; 
+				var popupContent = "<header><h3>" + feature.properties.nombre_promocional + "</h3></header><p>¡Cadáver adoptado!</p>"; 
 				layer.bindPopup(popupContent, {
 					className: 'popup-adoptado'
 				});
@@ -84,16 +82,15 @@ function addDataToMap(data,markerStyle) {
 	});
 	dataLayer.addTo(map);
 }
-//$.getJSON("data/error_de_sistema.geojson", function(data) { dataESistema = addDataToMap(data); });
-//var dataESistema = $.getJSON("data/error_de_sistema.geojson", function(data) { L.geoJson(data); });
 $.getJSON("data/error_de_sistema.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
 $.getJSON("data/bases_datos_previas.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
 $.getJSON("data/especulacionecologistas.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
 $.getJSON("data/base_datos_cadaveres_inmobiliarios_151007.geojson", function(data) { addDataToMap(data,styleAdoptado); });
 
 // MAP layer
+var mapCenter = [40.11169, -4.13086];
 var map = L.map('map', {
-	center: [40.11169, -4.13086],
+	center: mapCenter,
 	zoom: 6,
 	layers: [baseVector]
 });
@@ -105,23 +102,21 @@ var baseMaps = {
 };
 L.control.layers(baseMaps).addTo(map);
 
-// POPUP layer
-var popup = L.popup();
-
 // SEARCH: Reverse geoCoding
 new L.Control.GeoSearch({
 	provider: new L.GeoSearch.Provider.OpenStreetMap()
 }).addTo(map);
 
+// COORDS marker
+var marker;
 // get Lat Lon function
-function onMapClick(e) {
-	popup
-	.setLatLng(e.latlng)
-	.setContent("Este lugar tiene las siguiente coordenadas: " + e.latlng.toString())
-	.openOn(map);
+function getCoords(e) {
+	if( marker ) { map.removeLayer(marker); }
+	marker = new L.Marker(e.latlng).addTo(map);
+	marker.bindPopup("<p>Selecciona el siguiente par de números y pégalalo en el formulario <em>Adopta un cadáver</em>:</p><p><span class='adopta-coords'>" + e.latlng.lat.toString() + "," + e.latlng.lng.toString() + "</span></p>").openPopup();
 }
 
-map.on('click', onMapClick);
+map.on('click', getCoords);
 </script>
 </body>
 </html>
