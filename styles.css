@@ -4,3 +4,10 @@ html,body {
 }
 #map { height: 100%; }
 
+.popup-adoptado .leaflet-popup-content-wrapper,
+.popup-adoptado .leaflet-popup-tip{
+	background-color: #fc0;
+}
+.popup-adoptado a.leaflet-popup-close-button {
+	color: #fff;
+}

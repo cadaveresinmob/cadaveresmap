@@ -6,6 +6,8 @@
 
 <title>Cadáveres Inmobiliarios. Adopta un cadáver</title>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 
@@ -37,6 +39,58 @@ var baseSatellite = L.tileLayer(tilesUrl, {
 	accessToken: 'pk.eyJ1Ijoic2tvdHBlcmV6IiwiYSI6ImNpZmVjMWd1bTAwZnp1Y2tuenhncHlvNHMifQ.yHojMKQz04-JIz6N4HyjyA'
 });
 
+// STYLES: markers
+var styleDesenterrado = {
+    radius: 3,
+    fillColor: "#666",
+    color: "#666",
+    weight: 1,
+    opacity: 0.8,
+    fillOpacity: 0.8
+}
+var styleAdoptado = {
+    radius: 9,
+    fillColor: "#fc0",
+    color: "#fc0",
+    weight: 1,
+    opacity: 0.8,
+    fillOpacity: 0.8
+}
+
+// DATA: geoJSON layers
+//var dataESistema;
+//var dataBDPrevias;
+function addDataToMap(data,markerStyle) {
+	var dataLayer = L.geoJson(data, {
+		pointToLayer: function (feature, latlng) {
+			return L.circleMarker(latlng,markerStyle);
+		},
+		onEachFeature: function(feature, layer) {
+			if ( feature.properties.name ) {
+				var popupContent = "<header><h3>" + feature.properties.name + "</h3></header>";
+				layer.bindPopup(popupContent, {
+					className: 'popup-desenterrado'
+				});
+
+			}
+			if ( feature.properties.nombre_promocional ) {
+				var popupContent = "<header><h3>" + feature.properties.nombre_promocional + "</h3></header>"; 
+				layer.bindPopup(popupContent, {
+					className: 'popup-adoptado'
+				});
+
+			}
+		}
+	});
+	dataLayer.addTo(map);
+}
+//$.getJSON("data/error_de_sistema.geojson", function(data) { dataESistema = addDataToMap(data); });
+//var dataESistema = $.getJSON("data/error_de_sistema.geojson", function(data) { L.geoJson(data); });
+$.getJSON("data/error_de_sistema.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
+$.getJSON("data/bases_datos_previas.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
+$.getJSON("data/especulacionecologistas.geojson", function(data) { addDataToMap(data,styleDesenterrado); });
+$.getJSON("data/base_datos_cadaveres_inmobiliarios_151007.geojson", function(data) { addDataToMap(data,styleAdoptado); });
+
 // MAP layer
 var map = L.map('map', {
 	center: [40.11169, -4.13086],
@@ -46,8 +100,8 @@ var map = L.map('map', {
 
 // CONTROL: layer Switcher
 var baseMaps = {
-	    "Mapa": baseVector,
-	    "Satélite": baseSatellite
+	"Mapa": baseVector,
+	"Satélite": baseSatellite
 };
 L.control.layers(baseMaps).addTo(map);
 
