@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Obtener coordenadas de una localización</title>
+<title>Cadáveres Inmobiliarios. Adopta un cadáver</title>
 
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
@@ -13,6 +13,7 @@
 <script src="L.GeoSearch/js/l.geosearch.provider.openstreetmap.js"></script>
 <link rel="stylesheet" href="L.GeoSearch/css/l.geosearch.css" />
 
+<link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -20,21 +21,45 @@
 <div id="map"></div>
 
 <script>
-// basics
-var map = L.map('map').setView([40.11169, -4.13086], 6);
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+// TILES: base layers
+var tilesUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}';
+var tilesAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>';
+var baseVector = L.tileLayer(tilesUrl, {
+	attribution: tilesAttr,
 	maxZoom: 18,
 	id: 'skotperez.nkgo660p',
 	accessToken: 'pk.eyJ1Ijoic2tvdHBlcmV6IiwiYSI6ImNpZmVjMWd1bTAwZnp1Y2tuenhncHlvNHMifQ.yHojMKQz04-JIz6N4HyjyA'
-}).addTo(map);
+});
+var baseSatellite = L.tileLayer(tilesUrl, {
+	attribution: tilesAttr,
+	maxZoom: 18,
+	id: 'skotperez.nnf00875',
+	accessToken: 'pk.eyJ1Ijoic2tvdHBlcmV6IiwiYSI6ImNpZmVjMWd1bTAwZnp1Y2tuenhncHlvNHMifQ.yHojMKQz04-JIz6N4HyjyA'
+});
 
+// MAP layer
+var map = L.map('map', {
+	center: [40.11169, -4.13086],
+	zoom: 6,
+	layers: [baseVector]
+});
+
+// CONTROL: layer Switcher
+var baseMaps = {
+	    "Mapa": baseVector,
+	    "Satélite": baseSatellite
+};
+L.control.layers(baseMaps).addTo(map);
+
+// POPUP layer
 var popup = L.popup();
 
-    new L.Control.GeoSearch({
-        provider: new L.GeoSearch.Provider.OpenStreetMap()
-    }).addTo(map);
+// SEARCH: Reverse geoCoding
+new L.Control.GeoSearch({
+	provider: new L.GeoSearch.Provider.OpenStreetMap()
+}).addTo(map);
 
+// get Lat Lon function
 function onMapClick(e) {
 	popup
 	.setLatLng(e.latlng)
