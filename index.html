@@ -15,10 +15,16 @@
 <script src="L.GeoSearch/js/l.geosearch.provider.openstreetmap.js"></script>
 <link rel="stylesheet" href="L.GeoSearch/css/l.geosearch.css" />
 
+<script src="leaflet-sidebar/L.Control.Sidebar.js"></script>
+<link rel="stylesheet" href="leaflet-sidebar/L.Control.Sidebar.css" />
+
 <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
+<div id="sidebar">
+	<h2>leaflet-sidebar</h2>
+</div>
 
 <div id="map"></div>
 
@@ -56,7 +62,6 @@ var styleAdoptado = {
     opacity: 0.8,
     fillOpacity: 0.8
 }
-
 // DATA: geoJSON layers
 function addDataToMap(data,markerStyle) {
 	var dataLayer = L.geoJson(data, {
@@ -72,11 +77,9 @@ function addDataToMap(data,markerStyle) {
 
 			}
 			if ( feature.properties.nombre_promocional ) {
-				var popupContent = "<header><h3>" + feature.properties.nombre_promocional + "</h3></header><p>¡Cadáver adoptado!</p>"; 
-				layer.bindPopup(popupContent, {
-					className: 'popup-adoptado'
+				layer.on({
+					click: openSidebar
 				});
-
 			}
 		}
 	});
@@ -106,6 +109,41 @@ L.control.layers(baseMaps).addTo(map);
 new L.Control.GeoSearch({
 	provider: new L.GeoSearch.Provider.OpenStreetMap()
 }).addTo(map);
+
+// SIDEBAR
+var sidebar = L.control.sidebar('sidebar', {
+	closeButton: true,
+	position: 'left'
+});
+map.addControl(sidebar);
+
+// to show sidebar on startup
+//setTimeout(function () {
+//	sidebar.show();
+//}, 500);
+
+map.on('click', function () {
+	sidebar.hide();
+})
+
+function openSidebar(e) {
+	var layer = e.target;
+	layer.setStyle({
+		weight: 5,
+		color: '#666',
+		dashArray: '',
+		fillOpacity: 0.7
+	});
+
+	if (!L.Browser.ie && !L.Browser.opera) {
+		layer.bringToFront();
+	}
+	sidebar.setContent("<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header><p>¡Cadáver adoptado!</p>");
+	sidebar.toggle();
+}
+L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
+	console.log('Close button clicked.');
+});
 
 // COORDS marker
 var marker;
