@@ -14,4 +14,5 @@ html,body {
 
 .adopta-coords {
 	font: bold 20px/20px sans-serif;
+	word-wrap: break-word;
 }
