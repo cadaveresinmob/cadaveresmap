@@ -46,18 +46,10 @@ var baseSatellite = L.tileLayer(tilesUrl, {
 });
 
 // STYLES: markers
-var styleDesenterrado = {
-    radius: 3,
-    fillColor: "#666",
-    color: "#666",
-    weight: 1,
-    opacity: 0.8,
-    fillOpacity: 0.8
-}
 var styleAdoptado = {
     radius: 9,
     fillColor: "#fc0",
-    color: "#fc0",
+    color: "#666",
     weight: 1,
     opacity: 0.8,
     fillOpacity: 0.8
@@ -69,18 +61,9 @@ function addDataToMap(data,markerStyle) {
 			return L.circleMarker(latlng,markerStyle);
 		},
 		onEachFeature: function(feature, layer) {
-			if ( feature.properties.name ) {
-				var popupContent = "<header><h3>" + feature.properties.name + "</h3></header>";
-				layer.bindPopup(popupContent, {
-					className: 'popup-desenterrado'
-				});
-
-			}
-			if ( feature.properties.nombre_promocional ) {
 				layer.on({
 					click: openSidebar
 				});
-			}
 		}
 	});
 	dataLayer.addTo(map);
@@ -142,16 +125,6 @@ L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
 	console.log('Close button clicked.');
 });
 
-// COORDS marker
-var marker;
-// get Lat Lon function
-function getCoords(e) {
-	if( marker ) { map.removeLayer(marker); }
-	marker = new L.Marker(e.latlng).addTo(map);
-	marker.bindPopup("<p>Selecciona el siguiente par de números y pégalalo en el formulario <em>Adopta un cadáver</em>:</p><p><span class='adopta-coords'>" + e.latlng.lat.toString() + "," + e.latlng.lng.toString() + "</span></p>").openPopup();
-}
-
-map.on('click', getCoords);
 </script>
 </body>
 </html>
