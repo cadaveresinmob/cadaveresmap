@@ -62,6 +62,17 @@ function addDataToMap(data,markerStyle) {
 			return L.circleMarker(latlng,markerStyle);
 		},
 		onEachFeature: function(feature, layer) {
+			if( window.location.hash == '#'+layer.feature.properties.cartodb_id ) { console.log('HARE!');
+				var fields = "";
+				for (var k in v = layer.feature.properties) {
+					if( v.hasOwnProperty(k) && v[k] != "null" ) {
+						fields += "<strong>"+k+"</strong> "+v[k]+"<br>";
+					}
+				}
+				sidebar.setContent("<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header>"+fields);
+				sidebar.show();
+			}
+
 			layer.bindPopup(feature.properties.nombre_promocional,{ closeButton: false, offset: L.point(0,-20) });
 				layer.on({
 					click: prepareSidebar,
@@ -110,13 +121,9 @@ var sidebar = L.control.sidebar('sidebar', {
 });
 map.addControl(sidebar);
 
-// to show sidebar on startup
-//setTimeout(function () {
-//	sidebar.show();
-//}, 500);
-
 map.on('click', function () {
 	sidebar.hide();
+	window.location.hash = '';
 })
 
 function prepareSidebar(e) {
@@ -138,9 +145,10 @@ function prepareSidebar(e) {
 	if ( !sidebar.isVisible() ) {
 		sidebar.toggle();
 	}
+	window.location.hash = layer.feature.properties.cartodb_id;
 }
 L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
-	console.log('Close button clicked.');
+	window.location.hash = '';
 });
 
 </script>
