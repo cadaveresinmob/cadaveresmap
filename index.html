@@ -46,7 +46,7 @@ var baseSatellite = L.tileLayer(tilesUrl, {
 });
 
 // STYLES: markers
-var styleAdoptado = {
+var styleOut = {
     radius: 9,
     fillColor: "#fc0",
     color: "#666",
@@ -54,7 +54,21 @@ var styleAdoptado = {
     opacity: 0.8,
     fillOpacity: 1
 }
+var styleOver = {
+    color: "#000",
+    weight: 5
+}
+var styleClick = {
+    color: "#666",
+    weight: 5
+}
+function resetMarkersStyle(layer) {
+	layer.eachLayer(function(l){
+		l.setStyle(styleOut);
+	});
+}
 
+// SIDEBAR content
 function imageExists(url) {
 	var img = new Image();
 	img.src = url;
@@ -72,8 +86,9 @@ function popupContent(feature) {
 	return image+"<header><h3>" + feature.properties.nombre_promocional + "</h3></header>";
 }
 // DATA: geoJSON layers
+var dataLayer;
 function addDataToMap(data,markerStyle) {
-	var dataLayer = L.geoJson(data, {
+	dataLayer = L.geoJson(data, {
 		pointToLayer: function (feature, latlng) {
 			return L.circleMarker(latlng,markerStyle);
 		},
@@ -81,7 +96,7 @@ function addDataToMap(data,markerStyle) {
 			if( window.location.hash == '#'+layer.feature.properties.cartodb_id ) {
 				sidebar.setContent(sidebarContent(layer));
 				sidebar.show();
-				layer.setStyle({weight: 5});
+				layer.setStyle(styleClick);
 			}
 
 			layer.bindPopup(popupContent(feature),{
@@ -94,21 +109,25 @@ function addDataToMap(data,markerStyle) {
 				click: prepareSidebar,
 				mouseover: function() {
 					layer.openPopup();
-					layer.setStyle({weight: 5});
+					layer.setStyle(styleOver);
 					if (!L.Browser.ie && !L.Browser.opera) {
 						layer.bringToFront();
 					}
 				},
 				mouseout: function() {
 					layer.closePopup();
-					layer.setStyle({weight: 1});
+					if( window.location.hash == '#'+layer.feature.properties.cartodb_id ) {
+						layer.setStyle(styleClick);
+					} else {
+						layer.setStyle(styleOut);
+					}
 				}
 			});
 		}
 	});
 	dataLayer.addTo(map);
 }
-$.getJSON("data/base_datos_cadaveres_inmobiliarios_151007.geojson", function(data) { addDataToMap(data,styleAdoptado); });
+$.getJSON("data/base_datos_cadaveres_inmobiliarios_151007.geojson", function(data) { addDataToMap(data,styleOut); });
 
 // MAP layer
 var mapCenter = [40.11169, -4.13086];
@@ -141,7 +160,6 @@ map.on('click', function () {
 	sidebar.hide();
 	window.location.hash = '';
 })
-
 function sidebarContent(layer) {
 	// sidebar fields
 	var fields = "";
@@ -159,9 +177,8 @@ function sidebarContent(layer) {
 }
 function prepareSidebar(e) {
 	var layer = e.target;
-	layer.setStyle({
-		weight: 5
-	});
+	resetMarkersStyle(dataLayer);
+	layer.setStyle(styleClick);
 
 	if (!L.Browser.ie && !L.Browser.opera) {
 		layer.bringToFront();
