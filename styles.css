@@ -2,8 +2,15 @@ html,body {
 	height: 100%;
 	margin: 0; padding: 0;
 }
+figure {
+	margin: 0;
+	padding: 0;
+}
 #map { height: 100%; }
 
+.sidebar-img img {
+	max-width: 100% !important;
+}
 .popup-adoptado .leaflet-popup-content-wrapper,
 .popup-adoptado .leaflet-popup-tip{
 	background-color: #ff0;

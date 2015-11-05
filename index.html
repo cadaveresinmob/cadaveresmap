@@ -54,7 +54,23 @@ var styleAdoptado = {
     opacity: 0.8,
     fillOpacity: 1
 }
+
+function imageExists(url) {
+	var img = new Image();
+	img.src = url;
+	return img.height != 0;
+}
+function imageOutput(src,alt) { return "<figure class='sidebar-img'><img src='"+ src +"' alt='"+ alt +"' /></figure>"; }
+
 // POPUP
+function popupContent(feature) {
+	// popup image
+	var imageSrc = "images/"+feature.properties.cartodb_id +".jpg";
+	var imageAlt = "Foto aérea de "+ feature.properties.nombre_promocional;
+	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
+	else { var image = ""; }
+	return image+"<header><h3>" + feature.properties.nombre_promocional + "</h3></header>";
+}
 // DATA: geoJSON layers
 function addDataToMap(data,markerStyle) {
 	var dataLayer = L.geoJson(data, {
@@ -62,32 +78,32 @@ function addDataToMap(data,markerStyle) {
 			return L.circleMarker(latlng,markerStyle);
 		},
 		onEachFeature: function(feature, layer) {
-			if( window.location.hash == '#'+layer.feature.properties.cartodb_id ) { console.log('HARE!');
-				var fields = "";
-				for (var k in v = layer.feature.properties) {
-					if( v.hasOwnProperty(k) && v[k] != "null" ) {
-						fields += "<strong>"+k+"</strong> "+v[k]+"<br>";
-					}
-				}
-				sidebar.setContent("<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header>"+fields);
+			if( window.location.hash == '#'+layer.feature.properties.cartodb_id ) {
+				sidebar.setContent(sidebarContent(layer));
 				sidebar.show();
+				layer.setStyle({weight: 5});
 			}
 
-			layer.bindPopup(feature.properties.nombre_promocional,{ closeButton: false, offset: L.point(0,-20) });
-				layer.on({
-					click: prepareSidebar,
-					mouseover: function() {
-						layer.openPopup();
-						layer.setStyle({weight: 5});
-						if (!L.Browser.ie && !L.Browser.opera) {
-							layer.bringToFront();
-						}
-					},
-					mouseout: function() {
-						layer.closePopup();
-						layer.setStyle({weight: 1});
+			layer.bindPopup(popupContent(feature),{
+				closeButton: false,
+				offset: L.point(0,-20),
+				maxWidth: 200,
+				autoPan: false
+			});
+			layer.on({
+				click: prepareSidebar,
+				mouseover: function() {
+					layer.openPopup();
+					layer.setStyle({weight: 5});
+					if (!L.Browser.ie && !L.Browser.opera) {
+						layer.bringToFront();
 					}
-				});
+				},
+				mouseout: function() {
+					layer.closePopup();
+					layer.setStyle({weight: 1});
+				}
+			});
 		}
 	});
 	dataLayer.addTo(map);
@@ -126,6 +142,21 @@ map.on('click', function () {
 	window.location.hash = '';
 })
 
+function sidebarContent(layer) {
+	// sidebar fields
+	var fields = "";
+	for (var k in v = layer.feature.properties) {
+		if( v.hasOwnProperty(k) && v[k] != "null" ) {
+			fields += "<strong>"+k+"</strong> "+v[k]+"<br>";
+		}
+	}
+	// sidebar image
+	var imageSrc = "images/"+layer.feature.properties.cartodb_id +".jpg";
+	var imageAlt = "Foto aérea de "+ layer.feature.properties.nombre_promocional;
+	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
+	else { var image = ""; }
+	return "<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header>"+image+fields;
+}
 function prepareSidebar(e) {
 	var layer = e.target;
 	layer.setStyle({
@@ -135,13 +166,7 @@ function prepareSidebar(e) {
 	if (!L.Browser.ie && !L.Browser.opera) {
 		layer.bringToFront();
 	}
-	var fields = "";
-	for (var k in v = layer.feature.properties) {
-		if( v.hasOwnProperty(k) && v[k] != "null" ) {
-			fields += "<strong>"+k+"</strong> "+v[k]+"<br>";
-		}
-	}
-	sidebar.setContent("<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header>"+fields);
+	sidebar.setContent(sidebarContent(layer));
 	if ( !sidebar.isVisible() ) {
 		sidebar.toggle();
 	}
