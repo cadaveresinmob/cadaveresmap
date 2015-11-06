@@ -95,7 +95,8 @@ function aboutSidebar() {
 function imageExists(url) {
 	var img = new Image();
 	img.src = url;
-	return img.height != 0;
+//	return img.height != 0;
+	return img.height;
 }
 function imageOutput(src,alt) { return "<figure class='sidebar-img'><img src='"+ src +"' alt='"+ alt +"' /></figure>"; }
 //fields
@@ -134,7 +135,7 @@ var fieldsToShow = {
 function fieldsOutput(fields,geojsonLayerProperties,type,cssClass) {
 	var fieldsOutput = "";
 	var classOut = "sidebar-part";
-	if ( cssClass !== null ) { classOut += " "+cssClass; }
+	if ( typeof cssClass !== 'undefined' ) { classOut += " "+cssClass; }
 	if ( type === 'header' ) {
 		for (var p in o = fields) {
 			value = geojsonLayerProperties[p]
@@ -161,8 +162,9 @@ function fieldsOutput(fields,geojsonLayerProperties,type,cssClass) {
 function popupContent(feature) {
 	var imageSrc = "images/"+feature.properties.cartodb_id +".jpg";
 	var imageAlt = "Foto aérea de "+ feature.properties.nombre_promocional;
-	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
-	else { var image = ""; }
+//	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
+	var image = imageOutput(imageSrc,imageAlt);
+//	else { var image = ""; }
 	return image+"<header><h3>" + feature.properties.nombre_promocional + "</h3></header>";
 }
 // DATA: geoJSON layers
@@ -263,8 +265,9 @@ function sidebarContent(layer) {
 	// sidebar image
 	var imageSrc = "images/"+layer.feature.properties.cartodb_id +".jpg";
 	var imageAlt = "Foto aérea de "+ layer.feature.properties.nombre_promocional;
-	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
-	else { var image = ""; }
+//	if ( imageExists(imageSrc) != 0 ) { var image = imageOutput(imageSrc,imageAlt); }
+	var image = imageOutput(imageSrc,imageAlt);
+//	else { var image = "HAR!"; }
 	return linkAbout+title+subtitle+image+address+typology+numbers+actors;
 }
 function prepareSidebar(e) {
