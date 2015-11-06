@@ -69,6 +69,12 @@ function resetMarkersStyle(layer) {
 }
 
 // CONTENT
+// About
+var aboutCadaveres = "<header><h1>Cadáveres Inmobiliarios</h1></header><div class='excerpt'><img class='push-left' src='images/logo.png' alt='Logo Cadáveres' /><p><em>Base de datos de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos del periodo post-burbuja inmobiliaria.</em><br /><a href='http://cadaveresinmobiliarios.org'>cadaveresinmobiliarios.org</a></p><ul class='list-inline'><li><a class='social hide-text social-tw' href='http://twitter.com/cadaveres_inmob' title='Twitter Cadáveres'>Twitter</a></li><li><a class='social hide-text social-fb' href='https://www.facebook.com/cadaveres.inmobiliarios' title='Facebook Cadáveres'>Facebook</a></li><li><a class='social hide-text social-gh' href='http://github.com/cadaveresinmob' title='Repositorio de código'>Github</a></li><li><a class='social hide-text social-ml' href='https://groups.google.com/d/forum/hacia-base-datos-inmobiliaria' title='Lista de correo'>Lista de correo</a></li></ul></div><p>Una de las consecuencias más notables de la actual crisis económica en España es la proliferación de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos. Macrourbanizaciones fantasma, edificios públicos abandonados o infraestructuras a medio hacer forman hoy parte indeleble de un paisaje sacudido por una absurda megalomanía institucionalizada. Se trata de un fenómeno generalizado a nivel nacional y abarca tanto el plano territorial como el socio-político.</p><p>Ante la inexistencia de un inventario oficial, <strong>Cadáveres Inmobiliarios: Base de datos post-burbuja</strong> nace como un proyecto colectivo que persigue la localización y documentación de todos estos desarrollos que murieron antes de tiempo. Esta iniciativa es de marcado carácter interdisciplinar, englobando arquitectos, ingenieros, urbanistas, investigadores, artistas o activistas medioambientales e invita a la participación al mayor número de personas posible.</p><p>El objetivo de esta ambiciosa recopilación es la de proporcionar información exhaustiva de manera accesible para que cada cual la utilice acorde con sus intereses. Aunque el mero hecho de informar sobre este fenómeno supone una crítica implícita al modelo de desarrollo basado en el ladrillo, 'Cadáveres Inmobiliarios' pretende ser el punto de partida para futuros proyectos que propongan soluciones a situaciones hoy estancadas, fomentando así una concienciación social con respecto a una realidad que nos define y a la que no podemos dar la espalda.</p>";
+function aboutSidebar() {
+	sidebar.setContent(aboutCadaveres);
+	sidebar.show();
+}
 // image
 function imageExists(url) {
 	var img = new Image();
@@ -214,11 +220,23 @@ var sidebar = L.control.sidebar('sidebar', {
 });
 map.addControl(sidebar);
 
+setTimeout(function() {
+	if( window.location.hash === '#' || window.location.hash === '' ) {
+		aboutSidebar();
+	}
+}, 500);
+
 map.on('click', function () {
 	sidebar.hide();
 	window.location.hash = '';
 })
+L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
+	window.location.hash = '';
+});
+
 function sidebarContent(layer) {
+	// link to About cadaveres
+	linkAbout = "<div class='btn-bar'><a class='cadaver-btn' href='#' onClick='jQuery(aboutSidebar())'><span class='icon icon-info'></span> Sobre Cadáveres Inmobiliarios</a></div>";
 	// sidebar fields
 	title = fieldsOutput(fieldsToShow.title,layer.feature.properties,"header");
 	subtitle = fieldsOutput(fieldsToShow.subtitle,layer.feature.properties,"list");
@@ -231,7 +249,7 @@ function sidebarContent(layer) {
 	var imageAlt = "Foto aérea de "+ layer.feature.properties.nombre_promocional;
 	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
 	else { var image = ""; }
-	return title+subtitle+image+address+typology+numbers+actors;
+	return linkAbout+title+subtitle+image+address+typology+numbers+actors;
 }
 function prepareSidebar(e) {
 	var layer = e.target;
@@ -247,9 +265,6 @@ function prepareSidebar(e) {
 	}
 	window.location.hash = layer.feature.properties.cartodb_id;
 }
-L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
-	window.location.hash = '';
-});
 
 </script>
 </body>
