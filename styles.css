@@ -7,19 +7,37 @@ figure {
 	padding: 0;
 }
 #map { height: 100%; }
-
+#sidebar {
+	background-color: rgba(255,255,255,0.7);
+}
+.leaflet-sidebar .close {
+	background-color: transparent;
+}
+.leaflet-sidebar .close:hover {
+	background-color: #fff;
+}
 .sidebar-img img {
 	max-width: 100% !important;
 }
-.popup-adoptado .leaflet-popup-content-wrapper,
-.popup-adoptado .leaflet-popup-tip{
-	background-color: #ff0;
+dl.sidebar-part {
+	clear: both;
+	margin: 0.5em 0;
 }
-.popup-adoptado a.leaflet-popup-close-button {
-	color: #000;
+dl.sidebar-part.part-bordered {
+	padding: 0.5em 0 0;
+	border-top: 1px solid #000;
 }
-
-.adopta-coords {
-	font: bold 20px/20px sans-serif;
-	word-wrap: break-word;
+dl.sidebar-part dt {
+	clear: both;
+	float: left;
+	margin-right: 1em;
+}
+dl.sidebar-part dd {
+	margin-left: 0;
+}
+dl.sidebar-part dt {
+	font-weight: bold;
+}
+dl.sidebar-part dd.no-data {
+	color: #aaa;
 }

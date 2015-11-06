@@ -68,17 +68,75 @@ function resetMarkersStyle(layer) {
 	});
 }
 
-// SIDEBAR content
+// CONTENT
+// image
 function imageExists(url) {
 	var img = new Image();
 	img.src = url;
 	return img.height != 0;
 }
 function imageOutput(src,alt) { return "<figure class='sidebar-img'><img src='"+ src +"' alt='"+ alt +"' /></figure>"; }
+//fields
+var fieldsToShow = {
+	title: {
+		nombre_promocional: "Nombre promocional"
+	},
+	subtitle: {
+		estado_actual: "Estado actual"
+	},
+	address: {
+		direccion: "Dirección",
+		municipio: "Municipio",
+		provincia: "Provincia",
+		comunidad_autonoma: "Comunidad autónoma"
+	},
+	numbers: {
+		superficie_terreno: "Superficie terreno (ha)",
+		superficie_construida: "Superficie construida (ha)",
+		suelo_ocupado_actual: "Suelo ocupado actualmente (ha)"
+	},
+	actors: {
+		promotor: "Promotor",
+		constructor: "Constructor",
+		arquitecto_o_tecnico_redactor: "Arquitecto / Técnico redactor"
+	},
+	typology: {
+		nombre_urbanistico: "Nombre urbanístico",
+		uso: "Uso",
+		tipologia_principal_del_asentamiento: "Tipología principal del asentamiento",
+		tipologia_secundaria_del_asentamiento: "Tipología secundaria del asentamiento",
+		tipologia_edificatoria: "Tipología edificatoria"
+	}
+};
 
+function fieldsOutput(fields,geojsonLayerProperties,type,cssClass) {
+	var fieldsOutput = "";
+	var classOut = "sidebar-part";
+	if ( cssClass !== null ) { classOut += " "+cssClass; }
+	if ( type === 'header' ) {
+		for (var p in o = fields) {
+			value = geojsonLayerProperties[p]
+			if (o.hasOwnProperty(p)) {
+				fieldsOutput += "<header class='"+classOut+"'><h3>" +value+ "</h3></header>";
+			}		
+		}
+
+	} else {
+		fieldsOutput += "<dl class='"+classOut+"'>";
+		for (var p in o = fields) {
+			value = geojsonLayerProperties[p]
+			if (o.hasOwnProperty(p) && value != null && value != 'null' && value != '' ) {
+				fieldsOutput += "<dt>"+o[p]+"</dt><dd>"+value+"</dd>";
+			} else {
+				fieldsOutput += "<dt>"+o[p]+"</dt><dd class='no-data'>No definido</dd>";
+			}
+		}
+		fieldsOutput += "</dl>";
+	}
+	return fieldsOutput;
+}
 // POPUP
 function popupContent(feature) {
-	// popup image
 	var imageSrc = "images/"+feature.properties.cartodb_id +".jpg";
 	var imageAlt = "Foto aérea de "+ feature.properties.nombre_promocional;
 	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
@@ -162,18 +220,18 @@ map.on('click', function () {
 })
 function sidebarContent(layer) {
 	// sidebar fields
-	var fields = "";
-	for (var k in v = layer.feature.properties) {
-		if( v.hasOwnProperty(k) && v[k] != "null" ) {
-			fields += "<strong>"+k+"</strong> "+v[k]+"<br>";
-		}
-	}
+	title = fieldsOutput(fieldsToShow.title,layer.feature.properties,"header");
+	subtitle = fieldsOutput(fieldsToShow.subtitle,layer.feature.properties,"list");
+	address = fieldsOutput(fieldsToShow.address,layer.feature.properties,"list","part-bordered");
+	numbers = fieldsOutput(fieldsToShow.numbers,layer.feature.properties,"list","part-bordered");
+	actors = fieldsOutput(fieldsToShow.actors,layer.feature.properties,"list","part-bordered");
+	typology = fieldsOutput(fieldsToShow.typology,layer.feature.properties,"list","part-bordered");
 	// sidebar image
 	var imageSrc = "images/"+layer.feature.properties.cartodb_id +".jpg";
 	var imageAlt = "Foto aérea de "+ layer.feature.properties.nombre_promocional;
 	if ( imageExists(imageSrc) ) { var image = imageOutput(imageSrc,imageAlt); }
 	else { var image = ""; }
-	return "<header><h3>" + layer.feature.properties.nombre_promocional + "</h3></header>"+image+fields;
+	return title+subtitle+image+address+typology+numbers+actors;
 }
 function prepareSidebar(e) {
 	var layer = e.target;
