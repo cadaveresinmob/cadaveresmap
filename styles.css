@@ -6,11 +6,17 @@ figure {
 	margin: 0;
 	padding: 0;
 }
+h1.page-tit {
+	line-height: 1.1em;
+}
 .hide-text {
 	text-indent: 100%;
 	white-space: nowrap;
 	overflow: hidden;
 	display: block;
+}
+.clear {
+	clear: both;
 }
 .push-left {
 	float: left;
@@ -18,6 +24,7 @@ figure {
 }
 .list-inline {
 	list-style: none;
+	padding: 0;
 }
 .list-inline li {
 	display: table-cell;
@@ -104,4 +111,9 @@ dl.sidebar-part dt {
 }
 dl.sidebar-part dd.no-data {
 	color: #aaa;
+}
+
+/* media queries */
+@media (min-width: 769px) and (max-width: 992px) {
+	.push-left { float: none; }
 }
