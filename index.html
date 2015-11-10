@@ -15,12 +15,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:description" content="Mapa de la base de datos de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos del periodo post-burbuja inmobiliaria en España." />
 <meta property="og:url" content="http://cadaveresinmobiliarios.org/mapa" />
+<meta property="og:image" content="http://cadaveresinmobiliarios.org/mapa/screenshot.png" />
 <!-- twitter meta -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@cadaveres_inmob">
 <meta name="twitter:title" content="Mapa de Cadáveres Inmobiliarios" />
 <meta name="twitter:description" content="Mapa de la base de datos de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos del periodo post-burbuja inmobiliaria en España." />
 <meta name="twitter:creator" content="@cadaveres_inmob">
+<meta name="twitter:image:src" content="http://cadaveresinmobiliarios.org/mapa/screenshot.png">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
@@ -86,7 +88,7 @@ function resetMarkersStyle(layer) {
 
 // CONTENT
 // About
-var aboutCadaveres = "<header><h1>Cadáveres Inmobiliarios</h1></header><div class='excerpt'><img class='push-left' src='images/logo.png' alt='Logo Cadáveres' /><p><em>Base de datos de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos del periodo post-burbuja inmobiliaria.</em><br /><a href='http://cadaveresinmobiliarios.org'>cadaveresinmobiliarios.org</a></p><ul class='list-inline'><li><a class='social hide-text social-tw' href='http://twitter.com/cadaveres_inmob' title='Twitter Cadáveres'>Twitter</a></li><li><a class='social hide-text social-fb' href='https://www.facebook.com/cadaveres.inmobiliarios' title='Facebook Cadáveres'>Facebook</a></li><li><a class='social hide-text social-gh' href='http://github.com/cadaveresinmob' title='Repositorio de código'>Github</a></li><li><a class='social hide-text social-ml' href='https://groups.google.com/d/forum/hacia-base-datos-inmobiliaria' title='Lista de correo'>Lista de correo</a></li></ul></div><p>Una de las consecuencias más notables de la actual crisis económica en España es la proliferación de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos. Macrourbanizaciones fantasma, edificios públicos abandonados o infraestructuras a medio hacer forman hoy parte indeleble de un paisaje sacudido por una absurda megalomanía institucionalizada. Se trata de un fenómeno generalizado a nivel nacional y abarca tanto el plano territorial como el socio-político.</p><p>Ante la inexistencia de un inventario oficial, <strong>Cadáveres Inmobiliarios: Base de datos post-burbuja</strong> nace como un proyecto colectivo que persigue la localización y documentación de todos estos desarrollos que murieron antes de tiempo. Esta iniciativa es de marcado carácter interdisciplinar, englobando arquitectos, ingenieros, urbanistas, investigadores, artistas o activistas medioambientales e invita a la participación al mayor número de personas posible.</p><p>El objetivo de esta ambiciosa recopilación es la de proporcionar información exhaustiva de manera accesible para que cada cual la utilice acorde con sus intereses. Aunque el mero hecho de informar sobre este fenómeno supone una crítica implícita al modelo de desarrollo basado en el ladrillo, 'Cadáveres Inmobiliarios' pretende ser el punto de partida para futuros proyectos que propongan soluciones a situaciones hoy estancadas, fomentando así una concienciación social con respecto a una realidad que nos define y a la que no podemos dar la espalda.</p>";
+var aboutCadaveres = "<header><h1 class='page-tit'>Mapa de cadáveres inmobiliarios</h1></header><div class='excerpt'><img class='push-left' src='images/logo.png' alt='Logo Cadáveres' /><p><em>Mapa de proyectos arquitectónicos y desarrollos urbanísticos inacabados, infrautilizados o vacíos del periodo post-burbuja inmobiliaria española.</em></p><ul class='list-inline'><li><a class='social hide-text social-tw' href='http://twitter.com/cadaveres_inmob' title='Twitter Cadáveres'>Twitter</a></li><li><a class='social hide-text social-fb' href='https://www.facebook.com/cadaveres.inmobiliarios' title='Facebook Cadáveres'>Facebook</a></li><li><a class='social hide-text social-gh' href='http://github.com/cadaveresinmob' title='Repositorio de código'>Github</a></li><li><a class='social hide-text social-ml' href='https://groups.google.com/d/forum/hacia-base-datos-inmobiliaria' title='Lista de correo'>Lista de correo</a></li></ul></div><p class='clear'>Este mapa es una de las <a href='http://cadaveresinmobiliarios.org/visualizaciones'>visualizaciones</a> creadas a partir de la <a href='http://cadaveresinmobiliarios.org/base-datos'>base de datos de cadáveres inmobiliarios</a>.</p><h3>Sobre el proyecto Cadáveres Inmobiliarios</h3><p>Ante la inexistencia de un inventario oficial, <strong><a href='http://cadaveresinmobiliarios.org'>Cadáveres Inmobiliarios: Base de datos post-burbuja</a></strong> nace como un proyecto colectivo que persigue la localización y documentación de todos estos desarrollos que murieron antes de tiempo. Esta iniciativa es de marcado carácter interdisciplinar, englobando arquitectos, ingenieros, urbanistas, investigadores, artistas o activistas medioambientales e invita a la participación al mayor número de personas posible.</p><p>El objetivo de esta ambiciosa recopilación es la de proporcionar información exhaustiva de manera accesible para que cada cual la utilice acorde con sus intereses. Aunque el mero hecho de informar sobre este fenómeno supone una crítica implícita al modelo de desarrollo basado en el ladrillo, 'Cadáveres Inmobiliarios' pretende ser el punto de partida para futuros proyectos que propongan soluciones a situaciones hoy estancadas, fomentando así una concienciación social con respecto a una realidad que nos define y a la que no podemos dar la espalda.</p>";
 function aboutSidebar() {
 	sidebar.setContent(aboutCadaveres);
 	sidebar.show();
@@ -129,7 +131,13 @@ var fieldsToShow = {
 		tipologia_principal_del_asentamiento: "Tipología principal del asentamiento",
 		tipologia_secundaria_del_asentamiento: "Tipología secundaria del asentamiento",
 		tipologia_edificatoria: "Tipología edificatoria"
+	},
+	source: {
+		padre_adoptivo: "Padre adotivo / madre adoptiva",
+		fuente: "Fuente",
+		enlace_web: "Sitio web"
 	}
+
 };
 
 function fieldsOutput(fields,geojsonLayerProperties,type,cssClass) {
@@ -262,13 +270,14 @@ function sidebarContent(layer) {
 	numbers = fieldsOutput(fieldsToShow.numbers,layer.feature.properties,"list","part-bordered");
 	actors = fieldsOutput(fieldsToShow.actors,layer.feature.properties,"list","part-bordered");
 	typology = fieldsOutput(fieldsToShow.typology,layer.feature.properties,"list","part-bordered");
+	source = fieldsOutput(fieldsToShow.source,layer.feature.properties,"list","part-bordered");
 	// sidebar image
 	var imageSrc = "images/"+layer.feature.properties.cartodb_id +".jpg";
 	var imageAlt = "Foto aérea de "+ layer.feature.properties.nombre_promocional;
 //	if ( imageExists(imageSrc) != 0 ) { var image = imageOutput(imageSrc,imageAlt); }
 	var image = imageOutput(imageSrc,imageAlt);
 //	else { var image = "HAR!"; }
-	return linkAbout+title+subtitle+image+address+typology+numbers+actors;
+	return linkAbout+title+subtitle+image+address+typology+numbers+actors+source;
 }
 function prepareSidebar(e) {
 	var layer = e.target;
