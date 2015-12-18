@@ -48,20 +48,15 @@
 
 <script>
 // TILES: base layers
-var tilesUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}';
 var tilesAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>';
-var baseVector = L.tileLayer(tilesUrl, {
-	attribution: tilesAttr,
-	maxZoom: 18,
-	id: 'skotperez.nkgo660p',
-	accessToken: 'pk.eyJ1Ijoic2tvdHBlcmV6IiwiYSI6ImNpZmVjMWd1bTAwZnp1Y2tuenhncHlvNHMifQ.yHojMKQz04-JIz6N4HyjyA'
-});
-var baseSatellite = L.tileLayer(tilesUrl, {
-	attribution: tilesAttr,
-	maxZoom: 18,
-	id: 'skotperez.nnf00875',
-	accessToken: 'pk.eyJ1Ijoic2tvdHBlcmV6IiwiYSI6ImNpZmVjMWd1bTAwZnp1Y2tuenhncHlvNHMifQ.yHojMKQz04-JIz6N4HyjyA'
-});
+var baseVector = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution: tilesAttr,maxNativeZoom: 18,maxZoom:22});
+var baseSatellite = L.tileLayer.wms("http://www.ign.es/wms-inspire/pnoa-ma", {
+   layers: "OI.OrthoimageCoverage",//layer name (see get capabilities)
+   format: 'image/jpeg',
+   transparent: false,
+   version: '1.3.0',//wms version (see get capabilities)
+   attribution: "PNOA WMS. Cedido por © Instituto Geográfico Nacional de España"
+})
 
 // STYLES: markers
 var styleOut = {
